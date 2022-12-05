@@ -31,7 +31,7 @@ app.use('/vehicles', vehicleRoute);
 app.use('/oils', oilRoute);
 app.use('/receipts', receiptRoute);
 
-const port = 4000;
+const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
     console.log(`App Running at port: ${port}`);
