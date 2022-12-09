@@ -213,6 +213,47 @@ router.post(
   }
 );
 
+router.post("/add-payment",[
+  check("amount_paid", "Please Enter Some Amount").not().isEmpty(),
+    check("payment_type", "Please Select a Payment Type").not().isEmpty(),
+    check("payment_date", "Please Enter Payment Date").not().isEmpty(),
+], async(req, res) => {
+    console.log(req.body);
+    if (verifyToken(req, res)) {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(402).json(errors);
+      }
+      const receipt_id = req.body.receipt_id;
+      const amount_due = req.body.amount_due;
+      const amount_paid = req.body.amount_paid;
+      const amount_remaining = req.body.amount_remaining;
+      const payment_type = req.body.payment_type;
+      const payment_date = req.body.payment_date;
+
+      const payment = {
+       receipt_id : receipt_id,
+       amount_due : amount_due,
+       amount_paid : amount_paid,
+       amount_remaining : amount_remaining,
+       payment_type : payment_type,
+       payment_date : payment_date,
+      }
+      
+
+      // Receipt.findByIdAndUpdate(req.body._id, request, (error, data) => {
+      //   if (error) {
+      //     return res.status(402).json({ error: error });
+      //   } else {
+          return res
+            .status(200)
+            .json({ message: "Payment Added successfully" });
+      //   }
+      // });
+    } else {
+      return res.status(402).json({ error: "Unauthenticated" });
+    }
+});
 router.get("/delete/:id", (req, res) => {
   if (verifyToken(req, res)) {
     Receipt.findByIdAndRemove(req.params.id, (error, data) => {
