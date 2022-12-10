@@ -86,6 +86,10 @@ const oilSchema = new Schema({
         type:Date,
         required:true,
     },
+    payments:{
+        type:Array,
+        default:null,
+    },
 },{
     timestamps:true,
     collection: 'receipts',
