@@ -10,6 +10,7 @@ const tireRoute = require('./Routes/tire.route');
 const vehicleRoute = require('./Routes/vehicle.route');
 const oilRoute = require('./Routes/oil.route');
 const receiptRoute = require('./Routes/receipt.route');
+const reportRoute = require('./Routes/report.route')
 
 mongoose.connect('mongodb+srv://inventory:inventory123@inventorycluster.ai2teve.mongodb.net/db_inventory?retryWrites=true&w=majority').then(data => {
     console.log(`Conneced to Mongodb! Database name: ${data.connections[0].name}`);
@@ -30,6 +31,7 @@ app.use('/tires', tireRoute);
 app.use('/vehicles', vehicleRoute);
 app.use('/oils', oilRoute);
 app.use('/receipts', receiptRoute);
+app.use('/reports', reportRoute);
 
 const port = process.env.PORT || 4000;
 

@@ -6,7 +6,7 @@ const { check, validationResult } = require("express-validator");
 let Receipt = require("../Models/Receipt");
 const { verifyToken } = require("../Helpers");
 const today = new Date();
-
+today.setUTCHours(0, 0, 0, 0);
 router.post(
   "/add",
   [
