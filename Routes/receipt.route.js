@@ -4,6 +4,9 @@ let router = express.Router();
 const { check, validationResult } = require("express-validator");
 
 let Receipt = require("../Models/Receipt");
+let Oil = require('../Models/Oil');
+let Tire = require('../Models/Tire');
+
 const { verifyToken } = require("../Helpers");
 const today = new Date();
 today.setUTCHours(0, 0, 0, 0);
@@ -14,9 +17,6 @@ router.post(
     check("vehicle", "Vehicle name field is required").not().isEmpty(),
     check("status", "Receipt payment status field is required").not().isEmpty(),
     check("date", "Receipt date is required").not().isEmpty(),
-    // check('tiresuantity', "Quantity must be at least 1").isLength({min:1}),
-    // check('pricePerQuartz', "Price Per Quartz field must be at least 1").isLength({min:1}),
-    // check('pricePerVehicle', "Price Per Quartz field must be at least 1").isLength({min:1}),
   ],
   async (req, res) => {
     if (verifyToken(req, res)) {
@@ -70,14 +70,53 @@ router.post(
         remaining,
         date
       };
-
+      console.log(req.body.oil , req.body.tires);
       Receipt.create(request, (error, data) => {
         if (error) {
           return res.status(402).json({ error: error });
         } else {
-          return res.status(200).json(data);
+          // return res.status(200).json(data);
+          if (req.body.oil != '' && req.body.tires != '') {
+              Oil.findByIdAndUpdate({_id: req.body.oil._id}, {$inc:{'quantity' : -(5 + req.body.extraOilQuantity)}}, (error1, data1) => {
+                if (error) {
+                  return res.status(402).json({error:error1});
+                } else {
+                  Tire.findByIdAndUpdate({_id: req.body.tires._id}, {$inc:{'quantity' : -req.body.tiresQuantity}}, (error2, data2) => {
+                    if (error) {
+                      return res.status(402).json({error:error2});
+                    }else{
+                      return res.status(200).json(data);
+                    }
+                  })
+                }  
+              });
+          }
+          else if(req.body.oil != '' && req.body.tires == ''){
+            Oil.findByIdAndUpdate({_id: req.body.oil._id}, {$inc:{'quantity' : -(5 + req.body.extraOilQuantity)}}, (error1, data1) => {
+              if (error) {
+                return res.status(402).json({error:error1});
+              } else {
+                return res.status(200).json(data);
+              }  
+            });
+          }
+          else if(req.body.oil == '' && req.body.tires != ''){
+            Tire.findByIdAndUpdate({_id: req.body.tires._id}, {$inc:{'quantity' : -req.body.tiresQuantity}}, (error2, data2) => {
+              if (error) {
+                return res.status(402).json({error:error2});
+              }else{
+                return res.status(200).json(data);
+              }
+            })
+          }
+          else {
+            return res.status(200).json(data);
+          }
+          
         }
       });
+
+
     } else {
       return res.status(402).json({ error: "Unauthenticated" });
     }

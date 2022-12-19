@@ -16,14 +16,14 @@ const today_start = new Date();
 today_start.setUTCHours(0, 0, 0, 0);
 const today_end = new Date();
 today_end.setUTCHours(23, 59, 59, 999);
-console.log('today', today, 'today start', today_start, 'today end', today_end);
+// console.log('today', today, 'today start', today_start, 'today end', today_end);
 
 //current Week
 const week_start = new Date(today.setDate(today.getDate() - today.getDay()));
 week_start.setUTCHours(0, 0, 0, 0);
 const week_end = new Date(today.setDate(today.getDate() - today.getDay() + 6));
 week_end.setUTCHours(23, 59, 59, 999);
-console.log('today', today, 'week start', week_start, 'week end', week_end);
+// console.log('today', today, 'week start', week_start, 'week end', week_end);
 
 //current Month
 const month_start = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -31,14 +31,14 @@ month_start.setUTCHours(0, 0, 0, 0);
 const month_end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 month_end.setUTCHours(23, 59, 59, 999);
 
-console.log('today', today, 'month start', month_start, 'month end', month_end);
+// console.log('today', today, 'month start', month_start, 'month end', month_end);
 //current Year
 const current_year = new Date().getFullYear();
 const year_start = new Date(current_year, 0, 1);
 year_start.setUTCHours(0,0,0,0);
 const year_end = new Date(current_year, 11, 31)
 year_end.setUTCHours(23, 59, 59, 999);
-console.log('today', today, 'year start', year_start, 'year end', year_end);
+// console.log('today', today, 'year start', year_start, 'year end', year_end);
 
 router.get("/daily", (req, res) => {
   if (verifyToken(req, res)) {

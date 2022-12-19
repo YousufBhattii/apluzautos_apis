@@ -9,15 +9,20 @@ let userSchema = new Schema({
         type:String
     },
     password:{
-        type:String
+        type:String,
+        select:false,
     },
     profile:{
         type:String,
         default:'default.png',
     },
     parent_id:{
-        type:Number,
+        type:String,
         default:0,
+    },
+    user_role:{
+        type:Object,
+        default:null,
     },
 }, {
     timestamps:true,
