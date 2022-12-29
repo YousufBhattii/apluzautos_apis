@@ -45,6 +45,7 @@ router.post(
       const paid = req.body.paid;
       const remaining = req.body.remaining;
       const date = req.body.date;
+      const user_id = req.body.user_id;
 
       const request = {
         customer,
@@ -68,9 +69,10 @@ router.post(
         paymentType,
         paid,
         remaining,
-        date
+        date,
+        user_id
       };
-      console.log(req.body.oil , req.body.tires);
+      
       Receipt.create(request, (error, data) => {
         if (error) {
           return res.status(402).json({ error: error });
@@ -123,9 +125,9 @@ router.post(
   }
 );
 
-router.get("/", (req, res) => {
+router.get("/all/:user_id", (req, res) => {
   if (verifyToken(req, res)) {
-    Receipt.find((error, data) => {
+    Receipt.find({'user_id':req.params.user_id},(error, data) => {
       if (error) {
         return res.status(402).json({ error: error });
       } else {
@@ -137,9 +139,9 @@ router.get("/", (req, res) => {
   }
 });
 
-router.get("/today", (req, res) => {
+router.get("/today/:user_id", (req, res) => {
   if (verifyToken(req, res)) {
-    Receipt.find({$or:[{date:today}]},(error, data) => {
+    Receipt.find({$or:[{'user_id':req.params.user_id, date:today}]},(error, data) => {
       if (error) {
         return res.status(402).json({ error: error });
       } else {
@@ -150,9 +152,9 @@ router.get("/today", (req, res) => {
     return res.status(402).json({ error: "Unauthenticated" });
   }
 });
-router.get("/unpaid", (req, res) => {
+router.get("/unpaid/:user_id", (req, res) => {
   if (verifyToken(req, res)) {
-    Receipt.find({$or:[{status:'Unpaid'}]},(error, data) => {
+    Receipt.find({$or:[{'user_id':req.params.user_id, status:'Unpaid'}]},(error, data) => {
       if (error) {
         return res.status(402).json({ error: error });
       } else {
@@ -306,6 +308,20 @@ router.get("/delete/:id", (req, res) => {
     });
   } else {
     return res.status(402).json({ error: "Unauthenticated" });
+  }
+});
+
+router.get('/customer/:id', (req, res) => {
+  if(verifyToken(req, res)){
+      Receipt.find({"customer._id": req.params.id},(error, data) => {
+          if(error){
+              return res.status(402).json({'error': error});
+          }else{
+              return res.status(200).json(data);
+          }
+      });
+  }else{
+      return res.status(402).json({'error': 'Unauthenticated'});
   }
 });
 

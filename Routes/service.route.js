@@ -18,8 +18,9 @@ router.post('/add', [
         const service_name = req.body.service_name;
         const description = req.body.description;
         const price = req.body.price;
-    
-        const request = {service_name, description, price};
+        const user_id = req.body.user_id;
+        
+        const request = {service_name, description, price, user_id};
     
         Service.create(request, (error, data) => {
             if(error){
@@ -33,9 +34,9 @@ router.post('/add', [
     }
 });
 
-router.get('/', (req, res) => {
+router.get('/all/:user_id', (req, res) => {
     if(verifyToken(req, res)){
-        Service.find((error, data) => {
+        Service.find({user_id:req.params.user_id},(error, data) => {
             if(error){
                 return res.status(402).json({'error': error});
             }else{
@@ -59,8 +60,9 @@ router.post('/update', [
         const service_name = req.body.service_name;
         const description = req.body.description;
         const price = req.body.price;
-    
-        const request = {service_name, description, price};
+        const user_id = req.body.user_id;
+        
+        const request = {service_name, description, price, user_id};
     
         Service.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){

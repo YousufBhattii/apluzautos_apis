@@ -12,6 +12,13 @@ const vehicleSchema = new Schema({
     model:{
         type:String,
     },
+    customer:{
+        type:Object,
+        required:true,
+    },
+    user_id:{
+        type:String,
+    }
 },{
     timestamps:true,
     collection: 'vehicles',

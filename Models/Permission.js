@@ -23,6 +23,7 @@ let permissionSchema = new Schema({
         type:String,
         default:0,
     },
+    
 }, {
     timestamps:true,
     collection: 'permissions',

@@ -15,6 +15,12 @@ let customerSchema = new Schema({
     address:{
         type:String,
     },
+    tax:{
+        type:String,
+    },
+    user_id:{
+        type:String,
+    }
 }, {
     timestamps:true,
     collection: 'customers',

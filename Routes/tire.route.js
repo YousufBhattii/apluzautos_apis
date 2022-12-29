@@ -23,8 +23,9 @@ router.post('/add', [
         const quantity = req.body.quantity;
         const price = req.body.price;
         const quality = req.body.quality;
-    
-        const request = {brand, size, quantity, quality, price};
+        const user_id = req.body.user_id;
+        
+        const request = {brand, size, quantity, quality, price, user_id};
     
         Tire.create(request, (error, data) => {
             if(error){
@@ -38,9 +39,9 @@ router.post('/add', [
     }
 });
 
-router.get('/', (req, res) => {
+router.get('/all/:user_id', (req, res) => {
     if(verifyToken(req, res)){
-        Tire.find((error, data) => {
+        Tire.find({'user_id':req.params.user_id},(error, data) => {
             if(error){
                 return res.status(402).json({'error': error});
             }else{
@@ -69,8 +70,9 @@ router.post('/update', [
         const quantity = req.body.quantity;
         const price = req.body.price;
         const quality = req.body.quality;
+        const user_id = req.body.user_id;
     
-        const request = {brand, size, quantity, quality, price};
+        const request = {brand, size, quantity, quality, price, user_id};
     
         Tire.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){

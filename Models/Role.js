@@ -6,6 +6,9 @@ let roleSchema = new Schema({
         type:String,
         required: true,
     },
+    user_id:{
+        type:String,
+    }
 }, {
     timestamps:true,
     collection: 'roles',

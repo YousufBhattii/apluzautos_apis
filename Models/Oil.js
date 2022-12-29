@@ -25,6 +25,9 @@ const oilSchema = new Schema({
     pricePerVehicle:{
         type:Number,
         required: true,
+    },
+    user_id:{
+        type:String,
     }
 },{
     timestamps:true,

@@ -12,6 +12,9 @@ let serviceSchema = new Schema({
     price:{
         type:String,
     },
+    user_id:{
+        type:String,
+    }
 }, {
     timestamps:true,
     collection: 'services',

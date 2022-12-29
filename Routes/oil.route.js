@@ -25,8 +25,9 @@ router.post('/add', [
         const quantity = req.body.quantity;
         const pricePerQuartz = req.body.pricePerQuartz;
         const pricePerVehicle = req.body.pricePerVehicle;
-    
-        const request = {name, brand, type, quantity, pricePerQuartz, pricePerVehicle};
+        const user_id = req.body.user_id;
+        
+        const request = {name, brand, type, quantity, pricePerQuartz, pricePerVehicle, user_id};
     
         Oil.create(request, (error, data) => {
             if(error){
@@ -40,9 +41,9 @@ router.post('/add', [
     }
 });
 
-router.get('/', (req, res) => {
+router.get('/all/:user_id', (req, res) => {
     if(verifyToken(req, res)){
-        Oil.find((error, data) => {
+        Oil.find({'user_id':req.params.user_id},(error, data) => {
             if(error){
                 return res.status(402).json({'error': error});
             }else{
@@ -73,8 +74,9 @@ router.post('/update', [
         const quantity = req.body.quantity;
         const pricePerQuartz = req.body.pricePerQuartz;
         const pricePerVehicle = req.body.pricePerVehicle;
-    
-        const request = {name, brand, type, quantity, pricePerQuartz, pricePerVehicle};
+        const user_id = req.body.user_id;
+        
+        const request = {name, brand, type, quantity, pricePerQuartz, pricePerVehicle, user_id};
     
         Oil.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){

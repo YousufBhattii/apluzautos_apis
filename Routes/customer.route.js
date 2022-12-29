@@ -11,6 +11,7 @@ router.post('/add', [
     check('email', "Customer email field is required").not().isEmpty(),
     check('phone', "Customer phone field is required").not().isEmpty(),
     check('address', "Customer address field is required").not().isEmpty(),
+    check('tax', "Customer tax status is required").not().isEmpty(),
 ], async (req, res) => {
     if(verifyToken(req, res)){
         const errors = validationResult(req);
@@ -21,8 +22,10 @@ router.post('/add', [
         const email = req.body.email;
         const phone = req.body.phone;
         const address = req.body.address;
+        const tax = req.body.tax;
+        const user_id = req.body.user_id;
     
-        const request = {name, email, phone, address};
+        const request = {name, email, phone, address, tax, user_id};
     
         Customer.create(request, (error, data) => {
             if(error){
@@ -36,9 +39,9 @@ router.post('/add', [
     }
 });
 
-router.get('/', (req, res) => {
+router.get('/all/:user_id', (req, res) => {
     if(verifyToken(req, res)){
-        Customer.find((error, data) => {
+        Customer.find({'user_id':req.params.user_id},(error, data) => {
             if(error){
                 return res.status(402).json({'error': error});
             }else{
@@ -55,6 +58,7 @@ router.post('/update', [
     check('email', "Customer email field is required").not().isEmpty(),
     check('phone', "Customer phone field is required").not().isEmpty(),
     check('address', "Customer address field is required").not().isEmpty(),
+    check('tax', "Customer tax status is required").not().isEmpty(),
 ], async (req, res) => {
     if(verifyToken(req, res)){
         const errors = validationResult(req);
@@ -65,8 +69,10 @@ router.post('/update', [
         const email = req.body.email;
         const phone = req.body.phone;
         const address = req.body.address;
-    
-        const request = {name, email, phone, address};
+        const tax = req.body.tax;
+        const user_id = req.body.user_id;
+        
+        const request = {name, email, phone, address, tax, user_id};
     
         Customer.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){

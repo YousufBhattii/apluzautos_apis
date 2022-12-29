@@ -10,6 +10,7 @@ router.post('/add', [
     check('company', "Company name field is required").not().isEmpty(),
     check('name', "Vehicle name is required").not().isEmpty(),
     check('model', "Model is required").not().isEmpty(),
+    check('customer', "Customer is required").not().isEmpty(),
 ], async (req, res) => {
     if(verifyToken(req, res)){
         const errors = validationResult(req);
@@ -19,9 +20,11 @@ router.post('/add', [
         const company = req.body.company;
         const name = req.body.name;
         const model = req.body.model;
-    
-        const request = {company, name, model};
-    
+        const customer = req.body.customer;
+        const user_id = req.body.user_id;
+        
+        const request = {company, name, model, customer, user_id};
+        console.log(request);
         Vehicle.create(request, (error, data) => {
             if(error){
                 return res.status(402).json({'error': error});
@@ -34,9 +37,9 @@ router.post('/add', [
     }
 });
 
-router.get('/', (req, res) => {
+router.get('/all/:user_id', (req, res) => {
     if(verifyToken(req, res)){
-        Vehicle.find((error, data) => {
+        Vehicle.find({'user_id':req.params.user_id},(error, data) => {
             if(error){
                 return res.status(402).json({'error': error});
             }else{
@@ -52,6 +55,8 @@ router.post('/update', [
     check('company', "Company name field is required").not().isEmpty(),
     check('name', "Vehicle name is required").not().isEmpty(),
     check('model', "Model is required").not().isEmpty(),
+    check('customer', "Customer is required").not().isEmpty(),
+
 ], async (req, res) => {
     if(verifyToken(req, res)){
         const errors = validationResult(req);
@@ -61,8 +66,10 @@ router.post('/update', [
         const company = req.body.company;
         const name = req.body.name;
         const model = req.body.model;
-    
-        const request = {company, name, model};
+        const customer = req.body.customer;
+        const user_id = req.body.user_id;
+        
+        const request = {company, name, model, customer, user_id};
     
         Vehicle.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){
@@ -83,6 +90,20 @@ router.get('/delete/:id', (req, res) => {
                 return res.status(402).json({'error': error});
             }else{
                 return res.status(200).json({message: 'Vehicle deleted successfully'});
+            }
+        });
+    }else{
+        return res.status(402).json({'error': 'Unauthenticated'});
+    }
+});
+
+router.get('/customer/:id', (req, res) => {
+    if(verifyToken(req, res)){
+        Vehicle.find({"customer._id": req.params.id},(error, data) => {
+            if(error){
+                return res.status(402).json({'error': error});
+            }else{
+                return res.status(200).json(data);
             }
         });
     }else{

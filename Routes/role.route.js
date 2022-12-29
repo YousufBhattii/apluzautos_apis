@@ -15,8 +15,9 @@ router.post('/add', [
             return res.status(402).json(errors);
         }
         const name = req.body.name;
-    
-        const request = {name};
+        const user_id = req.body.user_id;
+        
+        const request = {name, user_id};
     
         Role.create(request, (error, data) => {
             if(error){
@@ -30,9 +31,9 @@ router.post('/add', [
     }
 });
 
-router.get('/', (req, res) => {
+router.get('/all/:user_id', (req, res) => {
     if(verifyToken(req, res)){
-        Role.find((error, data) => {
+        Role.find({user_id: req.params.user_id},(error, data) => {
             if(error){
                 return res.status(402).json({'error': error});
             }else{
@@ -53,8 +54,9 @@ router.post('/update', [
             return res.json(errors);
         }
         const name = req.body.name;
-    
-        const request = {name};
+        const user_id = req.body.user_id;
+        
+        const request = {name, user_id};
     
         Role.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){

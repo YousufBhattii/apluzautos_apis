@@ -90,6 +90,9 @@ const oilSchema = new Schema({
         type:Array,
         default:null,
     },
+    user_id:{
+        type:String,
+    }
 },{
     timestamps:true,
     collection: 'receipts',
