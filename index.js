@@ -4,6 +4,7 @@ let cors = require('cors');
 let bodyParser = require('body-parser');
 
 const userRoute = require('./Routes/user.route');
+const adminRoute = require('./Routes/admin.route');
 const customerRoute = require('./Routes/customer.route');
 const serviceRoute = require('./Routes/service.route');
 const tireRoute = require('./Routes/tire.route');
@@ -28,6 +29,7 @@ app.use(bodyParser.urlencoded({
     extended:true,
 }));
 app.use(cors());
+app.use('/admins', adminRoute);
 app.use('/users', userRoute);
 app.use('/customers', customerRoute);
 app.use('/services', serviceRoute);

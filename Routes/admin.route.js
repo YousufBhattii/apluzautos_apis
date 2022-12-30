@@ -39,7 +39,7 @@ router.post(
         if (error) {
           return res.status(402).json({ error: error });
         } else {
-          return res.json(data);
+          return res.status(200).json(data);
         }
       });
     }
@@ -47,7 +47,7 @@ router.post(
 );
 
 router.post(
-  "/login-user",
+  "/login-admin",
   [
     check("email", "Enter a valid email address").isEmail(),
     check("password", "Enter a password to continue").not().isEmpty(),
@@ -59,21 +59,16 @@ router.post(
     }
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select("+password");
-    if (user.user_type != 0 ) {
+    if (user.user_type != 1 ) {
       return res.status(402).json({ error: "Invalid email or password" });
     }
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = jwt.sign({ user_id: user._id, email }, Helpers.tokenKey, {
         expiresIn: "2h",
       });
-      let permissions = null;
-      if (user.user_role != null) {
-        permissions = await Permission.find({$or:[{role_id:user.user_role._id}]});        
-      }
       let data = {
         user,
         token,
-        permissions,
       };
       return res.status(200).json(data);
     } else {
@@ -82,9 +77,9 @@ router.post(
   }
 );
 
-router.get("/get-users", (req, res) => {
+router.get("/all-parent-users", (req, res) => {
   if (verifyToken(req, res)) {
-    User.find((error, data) => {
+    User.find({$or:[{'parent_id':"0", 'user_type':0}]},(error, data) => {
       if (error) {
         return res.status(402).json({ error: error });
       } else {
@@ -95,6 +90,34 @@ router.get("/get-users", (req, res) => {
     return res.status(402).json({ error: "Unauthenticated" });
   }
 });
+
+router.get("/user-details/:user_id", (req, res) => {
+  if (verifyToken(req, res)) {
+    let childs = [];
+    let user = {};
+
+    User.findById(req.params.user_id,(error, user_data) => {
+      if (error) {
+        return res.status(402).json({ error: error });
+      } else {
+        user = user_data;
+        User.find({$or:[{'parent_id':req.params.user_id}]},(error, child_data) => {
+            if (error) {
+              return res.status(402).json({ error: error });
+            } else {
+              childs = child_data;
+              return res.status(200).json({childs:childs, user:user});
+            }
+          });
+      }
+    });
+    
+  } else {
+    return res.status(402).json({ error: "Unauthenticated" });
+  }
+});
+
+
 
 router.get("/get-profile/:id", (req, res) => {
   if (verifyToken(req, res)) {

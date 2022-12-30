@@ -24,6 +24,10 @@ let userSchema = new Schema({
         type:Object,
         default:null,
     },
+    user_type:{
+        type:Number,
+        default:0,
+    },
 }, {
     timestamps:true,
     collection: 'users',
