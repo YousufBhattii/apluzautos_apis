@@ -33,10 +33,10 @@ router.post(
       const oil = req.body.oil;
       const extraOilPrice = req.body.extraOilPrice;
       const extraOilQuantity = req.body.extraOilQuantity;
-      const taxInclude = req.body.taxInclude;
+      const taxInclude = req.body.taxIncluded;
       const taxType = req.body.taxType;
       const tax = req.body.tax;
-      const discountInclude = req.body.discountInclude;
+      const discountInclude = req.body.discountIncluded;
       const discountType = req.body.discountType;
       const discount = req.body.discount;
       const totalPrice = req.body.totalPrice;
