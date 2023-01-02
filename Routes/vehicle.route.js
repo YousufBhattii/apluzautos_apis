@@ -7,8 +7,9 @@ let Vehicle = require('../Models/Vehicle');
 const { verifyToken } = require('../Helpers');
 
 router.post('/add', [
-    check('company', "Company name field is required").not().isEmpty(),
-    check('name', "Vehicle name is required").not().isEmpty(),
+    check('vin_number', "Vin Number field is required").not().isEmpty(),
+    check('year', "Year field is required").not().isEmpty(),
+    check('name', "Vehicle Make is required").not().isEmpty(),
     check('model', "Model is required").not().isEmpty(),
     check('customer', "Customer is required").not().isEmpty(),
 ], async (req, res) => {
@@ -17,13 +18,14 @@ router.post('/add', [
         if(!errors.isEmpty()){
             return res.status(402).json(errors);
         }
-        const company = req.body.company;
+        const vin_number = req.body.vin_number;
+        const year = req.body.year;
         const name = req.body.name;
         const model = req.body.model;
         const customer = req.body.customer;
         const user_id = req.body.user_id;
         
-        const request = {company, name, model, customer, user_id};
+        const request = {company, name, model, customer, user_id, vin_number, year};
         console.log(request);
         Vehicle.create(request, (error, data) => {
             if(error){
@@ -52,8 +54,9 @@ router.get('/all/:user_id', (req, res) => {
 });
 
 router.post('/update', [
-    check('company', "Company name field is required").not().isEmpty(),
-    check('name', "Vehicle name is required").not().isEmpty(),
+    check('vin_number', "Vin Number field is required").not().isEmpty(),
+    check('year', "Year field is required").not().isEmpty(),
+    check('name', "Vehicle Make is required").not().isEmpty(),
     check('model', "Model is required").not().isEmpty(),
     check('customer', "Customer is required").not().isEmpty(),
 
@@ -63,13 +66,14 @@ router.post('/update', [
         if(!errors.isEmpty()){
             return res.json(errors);
         }
-        const company = req.body.company;
+        const vin_number = req.body.vin_number;
+        const year = req.body.year;
         const name = req.body.name;
         const model = req.body.model;
         const customer = req.body.customer;
         const user_id = req.body.user_id;
         
-        const request = {company, name, model, customer, user_id};
+        const request = {company, name, model, customer, user_id, vin_number, year};
     
         Vehicle.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){

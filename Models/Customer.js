@@ -21,6 +21,9 @@ let customerSchema = new Schema({
     taxValue:{
         type:String,
     },
+    company_name:{
+        type:String,
+    },
     user_id:{
         type:String,
     }

@@ -16,6 +16,12 @@ const vehicleSchema = new Schema({
         type:Object,
         required:true,
     },
+    vin_number:{
+        type:Object,
+    },
+    year:{
+        type:Object,
+    },
     user_id:{
         type:String,
     }

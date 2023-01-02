@@ -26,8 +26,9 @@ router.post('/add', [
         const tax = req.body.tax;
         const taxValue = req.body.taxValue;
         const user_id = req.body.user_id;
+        const company_name = req.body.company_name;
     
-        const request = {name, email, phone, address, tax, taxValue, user_id};
+        const request = {name, email, phone, address, tax, taxValue, user_id, company_name};
     
         Customer.create(request, (error, data) => {
             if(error){
@@ -57,9 +58,9 @@ router.get('/all/:user_id', (req, res) => {
 
 router.post('/update', [
     check('name', "Customer name field is required").not().isEmpty(),
-    check('email', "Customer email field is required").not().isEmpty(),
+    // check('email', "Customer email field is required").not().isEmpty(),
     check('phone', "Customer phone field is required").not().isEmpty(),
-    check('address', "Customer address field is required").not().isEmpty(),
+    // check('address', "Customer address field is required").not().isEmpty(),
     check('tax', "Customer tax status is required").not().isEmpty(),
 ], async (req, res) => {
     if(verifyToken(req, res)){
@@ -74,8 +75,9 @@ router.post('/update', [
         const tax = req.body.tax;
         const taxValue = req.body.taxValue;
         const user_id = req.body.user_id;
+        const company_name = req.body.company_name;
         
-        const request = {name, email, phone, address, tax, taxValue, user_id};
+        const request = {name, email, phone, address, tax, taxValue, user_id, company_name};
     
         Customer.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){
