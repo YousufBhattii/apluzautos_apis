@@ -25,7 +25,7 @@ router.post('/add', [
         const customer = req.body.customer;
         const user_id = req.body.user_id;
         
-        const request = {company, name, model, customer, user_id, vin_number, year};
+        const request = {name, model, customer, user_id, vin_number, year};
         console.log(request);
         Vehicle.create(request, (error, data) => {
             if(error){
@@ -73,7 +73,7 @@ router.post('/update', [
         const customer = req.body.customer;
         const user_id = req.body.user_id;
         
-        const request = {company, name, model, customer, user_id, vin_number, year};
+        const request = {name, model, customer, user_id, vin_number, year};
     
         Vehicle.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){
