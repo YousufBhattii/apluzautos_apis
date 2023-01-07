@@ -72,44 +72,96 @@ router.post(
         date,
         user_id
       };
+      let tires_service = [];
+      let oils_service = [];
+      for (let i = 0; i < request.services.length; i++) {
+        if (request.services[i].value.type == 'tire_service') {
+          let tire = {
+            _id:request.services[i].value._id,
+            quantity:request.services[i].value.quantity,
+          }
+
+          tires_service.push(tire);
+        }
+        if (request.services[i].value.type == 'oil_service') {
+          let oils = {
+            _id:request.services[i].value._id,
+            quantity:5,
+          }
+
+          oils_service.push(oils);
+        }
+      }
+      console.log(tires_service);
+      console.log(oils_service);
       
       Receipt.create(request, (error, data) => {
         if (error) {
           return res.status(402).json({ error: error });
         } else {
           // return res.status(200).json(data);
-          if (req.body.oil != '' && req.body.tires != '') {
-              Oil.findByIdAndUpdate({_id: req.body.oil._id}, {$inc:{'quantity' : -(5 + req.body.extraOilQuantity)}}, (error1, data1) => {
-                if (error) {
+          if (tires_service.length != 0 && oils_service != 0) {
+              for(const tire in tires_service){
+                console.log(1, 'its working');
+                Tire.findByIdAndUpdate({_id: tire._id}, {$inc:{'quantity' : -(parseInt(tire.quantity))}}, (error1, data1) => {
                   return res.status(402).json({error:error1});
-                } else {
-                  Tire.findByIdAndUpdate({_id: req.body.tires._id}, {$inc:{'quantity' : -req.body.tiresQuantity}}, (error2, data2) => {
-                    if (error) {
-                      return res.status(402).json({error:error2});
-                    }else{
-                      return res.status(200).json(data);
-                    }
-                  })
-                }  
-              });
-          }
-          else if(req.body.oil != '' && req.body.tires == ''){
-            Oil.findByIdAndUpdate({_id: req.body.oil._id}, {$inc:{'quantity' : -(5 + req.body.extraOilQuantity)}}, (error1, data1) => {
-              if (error) {
-                return res.status(402).json({error:error1});
-              } else {
-                return res.status(200).json(data);
-              }  
-            });
-          }
-          else if(req.body.oil == '' && req.body.tires != ''){
-            Tire.findByIdAndUpdate({_id: req.body.tires._id}, {$inc:{'quantity' : -req.body.tiresQuantity}}, (error2, data2) => {
-              if (error) {
-                return res.status(402).json({error:error2});
-              }else{
-                return res.status(200).json(data);
+                });
               }
-            })
+
+              for(const oils in oils_service){
+                console.log(2, 'its working');
+
+                Oil.findByIdAndUpdate({_id: oils._id}, {$inc:{'quantity' : -(oils.quantity)}}, (error2, data2) => {
+                  return res.status(402).json({error:error2});
+                });
+              }
+
+              return res.status(200).json(data);
+
+              // Oil.findByIdAndUpdate({_id: req.body.oil._id}, {$inc:{'quantity' : -(5 + req.body.extraOilQuantity)}}, (error1, data1) => {
+              //   if (error) {
+              //     return res.status(402).json({error:error1});
+              //   } else {
+              //     Tire.findByIdAndUpdate({_id: req.body.tires._id}, {$inc:{'quantity' : -req.body.tiresQuantity}}, (error2, data2) => {
+              //       if (error) {
+              //         return res.status(402).json({error:error2});
+              //       }else{
+              //         return res.status(200).json(data);
+              //       }
+              //     })
+              //   }  
+              // });
+          }
+          else if(oils_service.length != 0 && tires_service.length == 0){
+            for(const oils in oils_service){
+              console.log('its working');
+
+              Oil.findByIdAndUpdate({_id: oils._id}, {$inc:{'quantity' : -(oils.quantity)}});
+            }
+
+            return res.status(200).json(data);
+            // Oil.findByIdAndUpdate({_id: req.body.oil._id}, {$inc:{'quantity' : -(5 + req.body.extraOilQuantity)}}, (error1, data1) => {
+            //   if (error) {
+            //     return res.status(402).json({error:error1});
+            //   } else {
+            //     return res.status(200).json(data);
+            //   }  
+            // });
+          }
+          else if(oils_service.length == 0 && tires_service.length != 0){
+            for(const tire in tires_service){
+              Tire.findByIdAndUpdate({_id: tire._id}, {$inc:{'quantity' : -tire.quantity}});
+              console.log('its working');
+            }
+
+            return res.status(200).json(data);
+            // Tire.findByIdAndUpdate({_id: req.body.tires._id}, {$inc:{'quantity' : -req.body.tiresQuantity}}, (error2, data2) => {
+            //   if (error) {
+            //     return res.status(402).json({error:error2});
+            //   }else{
+            //     return res.status(200).json(data);
+            //   }
+            // })
           }
           else {
             return res.status(200).json(data);

@@ -9,6 +9,7 @@ const { verifyToken } = require('../Helpers');
 router.post('/add', [
     check('service_name', "Service name field is required").not().isEmpty(),
     check('price', "Enter valid price value").not().isEmpty().isNumeric(),
+    check('tax', "Select tax status of service").not().isEmpty(),
 ], async (req, res) => {
     if(verifyToken(req, res)){
         const errors = validationResult(req);
@@ -18,9 +19,10 @@ router.post('/add', [
         const service_name = req.body.service_name;
         const description = req.body.description;
         const price = req.body.price;
+        const tax = req.body.tax;
         const user_id = req.body.user_id;
         
-        const request = {service_name, description, price, user_id};
+        const request = {service_name, description, price, tax, user_id};
     
         Service.create(request, (error, data) => {
             if(error){
@@ -51,6 +53,7 @@ router.get('/all/:user_id', (req, res) => {
 router.post('/update', [
     check('service_name', "Service name field is required").not().isEmpty(),
     check('price', "Price field is required").not().isEmpty(),
+    check('tax', "Select tax status of service").not().isEmpty(),
 ], async (req, res) => {
     if(verifyToken(req, res)){
         const errors = validationResult(req);
@@ -60,9 +63,10 @@ router.post('/update', [
         const service_name = req.body.service_name;
         const description = req.body.description;
         const price = req.body.price;
+        const tax = req.body.tax;
         const user_id = req.body.user_id;
         
-        const request = {service_name, description, price, user_id};
+        const request = {service_name, description, price, tax, user_id};
     
         Service.findByIdAndUpdate(req.body._id, request, (error, data) => {
             if(error){

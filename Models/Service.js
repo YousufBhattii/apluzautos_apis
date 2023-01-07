@@ -12,6 +12,9 @@ let serviceSchema = new Schema({
     price:{
         type:String,
     },
+    tax:{
+        type:String,
+    },
     user_id:{
         type:String,
     }
