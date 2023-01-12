@@ -201,4 +201,44 @@ router.get("/annually/:user_id", (req, res) => {
   }
 });
 
+router.get("/dashboard/:user_id", (req, res) => {
+  if (verifyToken(req, res)) {
+    let receipts = [];
+    let customers = [];
+    let vehicles = [];
+    Receipt.find({$or:[{user_id: req.params.user_id}]}).sort({createdAt: -1}).exec((error, receipts_data) => {
+      if (error) {
+        return res.status(402).json({ error: error });
+      } else {
+        receipts = receipts_data;
+
+        Customer.find({$or:[{user_id: req.params.user_id}]}).sort({createdAt: -1}).exec((error, customers_data) => {
+          if (error) {
+            return res.status(402).json({ error: error });
+          } else {
+            customers = customers_data;
+
+            Vehicle.find({$or:[{user_id: req.params.user_id}]},(error, vehicles_data) => {
+              if (error) {
+                return res.status(402).json({ error: error });
+              } else {
+                vehicles = vehicles_data;
+                return res
+                  .status(200)
+                  .json({
+                    customers: customers,
+                    vehicles: vehicles,
+                    receipts: receipts,
+                  });
+              }
+            });
+          }
+        });
+      }
+    });
+  } else {
+    return res.status(402).json({ error: "Unauthenticated" });
+  }
+});
+
 module.exports = router;

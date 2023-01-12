@@ -101,20 +101,23 @@ router.post(
         } else {
           // return res.status(200).json(data);
           if (tires_service.length != 0 && oils_service != 0) {
-              for(const tire in tires_service){
-                console.log(1, 'its working');
-                Tire.findByIdAndUpdate({_id: tire._id}, {$inc:{'quantity' : -(parseInt(tire.quantity))}}, (error1, data1) => {
-                  return res.status(402).json({error:error1});
-                });
+            for (let i = 0; i < tires_service.length; i++) {
+                console.log(1, tires_service[i]._id, tires_service[i].quantity);
+              Tire.findOneAndUpdate({_id: tires_service[i]._id}, {$inc:{'quantity' : -(parseInt(tires_service[i].quantity))}});
+            }
+              // for(const tire in tires_service){
+              //   console.log(1, tire._id);
+              //   Tire.findByIdAndUpdate({_id: tire._id}, {$inc:{'quantity' : -(parseInt(tire.quantity))}});
+              // }
+
+              for (let j = 0; j < oils_service.length; j++) {
+                console.log(1, oils_service[j]._id, oils_service[j].quantity);
+                Oil.findOneAndUpdate({_id: oils_service[j]._id}, {$inc:{'quantity' : -(oils_service[j].quantity)}});
               }
 
-              for(const oils in oils_service){
-                console.log(2, 'its working');
-
-                Oil.findByIdAndUpdate({_id: oils._id}, {$inc:{'quantity' : -(oils.quantity)}}, (error2, data2) => {
-                  return res.status(402).json({error:error2});
-                });
-              }
+              // for(const oils in oils_service){
+              //   Oil.findByIdAndUpdate({_id: oils._id}, {$inc:{'quantity' : -(oils.quantity)}});
+              // }
 
               return res.status(200).json(data);
 
