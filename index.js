@@ -6,6 +6,7 @@ let bodyParser = require('body-parser');
 const userRoute = require('./Routes/user.route');
 const adminRoute = require('./Routes/admin.route');
 const customerRoute = require('./Routes/customer.route');
+const employeeRoute = require('./Routes/employee.route');
 const serviceRoute = require('./Routes/service.route');
 const tireRoute = require('./Routes/tire.route');
 const vehicleRoute = require('./Routes/vehicle.route');
@@ -32,6 +33,7 @@ app.use(cors());
 app.use('/admins', adminRoute);
 app.use('/users', userRoute);
 app.use('/customers', customerRoute);
+app.use('/employees', employeeRoute);
 app.use('/services', serviceRoute);
 app.use('/tires', tireRoute);
 app.use('/vehicles', vehicleRoute);
@@ -48,4 +50,3 @@ const port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log(`App Running at port: ${port}`);
 });
-

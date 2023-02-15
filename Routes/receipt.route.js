@@ -14,6 +14,7 @@ router.post(
   "/add",
   [
     check("customer", "Receipt Customer field is required").not().isEmpty(),
+    // check("technician", "Technician field is required").not().isEmpty(),
     check("vehicle", "Vehicle name field is required").not().isEmpty(),
     check("status", "Receipt payment status field is required").not().isEmpty(),
     check("date", "Receipt date is required").not().isEmpty(),
@@ -25,6 +26,7 @@ router.post(
         return res.status(402).json(errors);
       }
       const customer = req.body.customer;
+      const technician = req.body.technician;
       const vehicle = req.body.vehicle;
       const services = req.body.services;
       const tires = req.body.tires;
@@ -49,6 +51,7 @@ router.post(
 
       const request = {
         customer,
+        technician,
         vehicle,
         services,
         tires,
@@ -310,11 +313,10 @@ router.post(
 );
 
 router.post("/add-payment",[
-  check("amount_paid", "Please Enter Some Amount").not().isEmpty(),
+    check("amount_paid", "Please Enter Some Amount").not().isEmpty(),
     check("payment_type", "Please Select a Payment Type").not().isEmpty(),
     check("payment_date", "Please Enter Payment Date").not().isEmpty(),
 ], async(req, res) => {
-    console.log(req.body);
     if (verifyToken(req, res)) {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -349,6 +351,53 @@ router.post("/add-payment",[
     } else {
       return res.status(402).json({ error: "Unauthenticated" });
     }
+});
+
+router.post("/bulk-payment",[
+  check("payment_type", "Please Select a Payment Type").not().isEmpty(),
+  check("payment_date", "Please Enter Payment Date").not().isEmpty(),
+], async(req, res)=>{
+  if (verifyToken(req, res)) {
+    // console.log(req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(402).json(errors);
+    }
+    const receiptsToUpdate = req.body.receipts;
+    const payment_date = req.body.payment_date;
+    const payment_type = req.body.payment_type;
+
+    const updatePromises = [];
+
+    for (let receipt of receiptsToUpdate){ 
+      const payment = {
+        amount_due: receipt.remaining,
+        amount_paid: receipt.remaining,
+        amount_remaining: 0,
+        payment_type: payment_type,
+        payment_date: payment_date,
+      };
+      updatePromises.push(Receipt.updateMany({_id:receipt._id}, {$push:{payments:payment},
+        $set:{
+          status:'Paid',
+          payment_type:payment.payment_type,
+          paid:receipt.totalPrice,
+          remaining:0
+        }
+      }))
+      
+    }
+    
+    try {
+      await Promise.all(updatePromises);
+      return res.status(200).json({ message: "Payment Added successfully" });
+    } catch(error) {
+      return res.status(402).json({ error });
+    }
+
+  } else {
+    return res.status(402).json({ error: "Unauthenticated" });
+  }
 });
 router.get("/delete/:id", (req, res) => {
   if (verifyToken(req, res)) {

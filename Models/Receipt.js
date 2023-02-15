@@ -90,6 +90,10 @@ const oilSchema = new Schema({
         type:Array,
         default:null,
     },
+    technician:{
+        type:Object,
+        // required: true,
+    },
     user_id:{
         type:String,
     }

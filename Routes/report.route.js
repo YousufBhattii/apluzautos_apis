@@ -16,7 +16,7 @@ const today_start = new Date();
 today_start.setUTCHours(0, 0, 0, 0);
 const today_end = new Date();
 today_end.setUTCHours(23, 59, 59, 999);
-// console.log('today', today, 'today start', today_start, 'today end', today_end);
+console.log('today', today, 'today start', today_start, 'today end', today_end);
 
 //current Week
 const week_start = new Date(today.setDate(today.getDate() - today.getDay()));
