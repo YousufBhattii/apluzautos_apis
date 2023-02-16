@@ -95,17 +95,17 @@ router.post(
           oils_service.push(oils);
         }
       }
-      console.log(tires_service);
-      console.log(oils_service);
+      // console.log(tires_service);
+      // console.log(oils_service);
       
-      Receipt.create(request, (error, data) => {
+      Receipt.create(request, async (error, data) => {
         if (error) {
           return res.status(402).json({ error: error });
         } else {
           // return res.status(200).json(data);
           if (tires_service.length != 0 && oils_service != 0) {
             for (let i = 0; i < tires_service.length; i++) {
-                console.log(1, tires_service[i]._id, tires_service[i].quantity);
+                // console.log(1, tires_service[i]._id, tires_service[i].quantity);
               Tire.findOneAndUpdate({_id: tires_service[i]._id}, {$inc:{'quantity' : -(parseInt(tires_service[i].quantity))}});
             }
               // for(const tire in tires_service){
@@ -114,7 +114,7 @@ router.post(
               // }
 
               for (let j = 0; j < oils_service.length; j++) {
-                console.log(1, oils_service[j]._id, oils_service[j].quantity);
+                // console.log(1, oils_service[j]._id, oils_service[j].quantity);
                 Oil.findOneAndUpdate({_id: oils_service[j]._id}, {$inc:{'quantity' : -(oils_service[j].quantity)}});
               }
 
@@ -140,7 +140,7 @@ router.post(
           }
           else if(oils_service.length != 0 && tires_service.length == 0){
             for(const oils in oils_service){
-              console.log('its working');
+              // console.log('its working');
 
               Oil.findByIdAndUpdate({_id: oils._id}, {$inc:{'quantity' : -(oils.quantity)}});
             }
@@ -155,10 +155,10 @@ router.post(
             // });
           }
           else if(oils_service.length == 0 && tires_service.length != 0){
-            for(const tire in tires_service){
-              Tire.findByIdAndUpdate({_id: tire._id}, {$inc:{'quantity' : -tire.quantity}});
-              console.log('its working');
-            }
+            await Promise.all(tires_service.map(tire => {
+              return Tire.findOneAndUpdate({_id: tire._id}, {$inc:{'quantity' : -(parseInt(tire.quantity))}});
+            }));
+            // await Promise.all([...tirePromises]);
 
             return res.status(200).json(data);
             // Tire.findByIdAndUpdate({_id: req.body.tires._id}, {$inc:{'quantity' : -req.body.tiresQuantity}}, (error2, data2) => {
