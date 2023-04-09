@@ -94,6 +94,18 @@ const oilSchema = new Schema({
         type:Object,
         // required: true,
     },
+    tiresTax:{
+        type:Number,
+        default:0,
+    },
+    note:{
+        type:String,
+        // required: true,
+    },
+    isDraft:{
+        type:Number,
+        default:0,
+    },
     user_id:{
         type:String,
     }
