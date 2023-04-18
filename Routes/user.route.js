@@ -59,7 +59,8 @@ router.post(
     }
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select("+password");
-    if (user.user_type != 0 ) {
+    // console.log(user);
+    if (user == null || user.user_type != 0 ) {
       return res.status(402).json({ error: "Invalid email or password" });
     }
     if (user && (await bcrypt.compare(password, user.password))) {
